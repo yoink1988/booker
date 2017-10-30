@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /api/
+
+RewriteRule (.*) http://localhost/booker/server/api/$1 [P]
+
+#RewriteRule (.*) http://192.168.0.15/~user9/booker/server/api/$1 [P]

@@ -1,0 +1,9 @@
+RewriteEngine On
+
+RewriteBase /booker/server/api/booker/
+#RewriteBase /~user9/booker/server/api/booker/
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ index.php
