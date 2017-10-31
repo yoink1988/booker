@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 30 2017 г., 14:56
+-- Время создания: Окт 31 2017 г., 15:02
 -- Версия сервера: 5.6.16
 -- Версия PHP: 5.5.11
 
@@ -32,10 +32,20 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `login` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `pass` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL,
+  `id_role` int(11) NOT NULL,
   `hash` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Дамп данных таблицы `employees`
+--
+
+INSERT INTO `employees` (`id`, `name`, `login`, `email`, `pass`, `id_role`, `hash`) VALUES
+(1, 'Iluha', 'yoink', 'iluha@mail.ru', 'qweqwe11', 2, ''),
+(2, 'valera', 'valera', 'valera@mail.ru', 'qweqwe11', 1, ''),
+(3, 'gena', 'gena', 'gena@mail.ru', 'qweqwe11', 1, ''),
+(4, 'vasya', 'vasa', 'vasa@mail.ru', 'qweqwe11', 1, '');
 
 -- --------------------------------------------------------
 
@@ -49,7 +59,15 @@ CREATE TABLE IF NOT EXISTS `events` (
   `id_employee` int(11) NOT NULL,
   `id_room` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Дамп данных таблицы `events`
+--
+
+INSERT INTO `events` (`id`, `description`, `id_employee`, `id_room`) VALUES
+(1, 'eqwewqeqweqweqwe', 2, 1),
+(2, 'asdasdasdasdasd', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -68,7 +86,28 @@ CREATE TABLE IF NOT EXISTS `event_details` (
 --
 
 INSERT INTO `event_details` (`id`, `start`, `end`) VALUES
-(1, '2017-10-30 16:00:00', '2017-10-30 17:00:00');
+(1, '2017-10-31 16:00:00', '2017-10-31 17:00:00'),
+(2, '2017-10-31 18:00:00', '2017-10-31 19:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `roles`
+--
+
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` enum('user','admin') NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Дамп данных таблицы `roles`
+--
+
+INSERT INTO `roles` (`id`, `name`) VALUES
+(1, 'user'),
+(2, 'admin');
 
 -- --------------------------------------------------------
 
@@ -80,7 +119,16 @@ CREATE TABLE IF NOT EXISTS `rooms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Дамп данных таблицы `rooms`
+--
+
+INSERT INTO `rooms` (`id`, `name`) VALUES
+(1, 'room1'),
+(2, 'room2'),
+(3, 'room3');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
