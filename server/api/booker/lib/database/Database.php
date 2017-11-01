@@ -68,7 +68,7 @@ class Database
 
 	public function update(\database\QUpdate $query)
 	{
-		$this->pdo->exec($query);
+		$res = $this->pdo->exec($query->getStringQuery());
 
 		return $res !==false;
 	}
@@ -85,7 +85,7 @@ class Database
 
 	public function selectOne(\database\QSelect $query)
 	{
-		$res = $this->select($query);
+		$res = $this->select($query->getStringQuery());
 		return $res[0];
 	}
 

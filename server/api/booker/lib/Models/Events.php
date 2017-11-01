@@ -21,12 +21,8 @@ class Events
 												->setWhere("ed.start between '{$params['start']}' and '{$params['end']}'"
 												. "and e.id_room = {$params['id_room']}");
 
-
-
 		return $this->db->select($query);
-//
-//		dump($res);
-//		exit;
+
 	}
 }
 

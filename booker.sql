@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Окт 31 2017 г., 15:02
+-- Время создания: Ноя 01 2017 г., 15:03
 -- Версия сервера: 5.6.16
 -- Версия PHP: 5.5.11
 
@@ -29,7 +29,6 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `employees` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `login` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `pass` varchar(255) NOT NULL,
   `id_role` int(11) NOT NULL,
@@ -41,11 +40,11 @@ CREATE TABLE IF NOT EXISTS `employees` (
 -- Дамп данных таблицы `employees`
 --
 
-INSERT INTO `employees` (`id`, `name`, `login`, `email`, `pass`, `id_role`, `hash`) VALUES
-(1, 'Iluha', 'yoink', 'iluha@mail.ru', 'qweqwe11', 2, ''),
-(2, 'valera', 'valera', 'valera@mail.ru', 'qweqwe11', 1, ''),
-(3, 'gena', 'gena', 'gena@mail.ru', 'qweqwe11', 1, ''),
-(4, 'vasya', 'vasa', 'vasa@mail.ru', 'qweqwe11', 1, '');
+INSERT INTO `employees` (`id`, `name`, `email`, `pass`, `id_role`, `hash`) VALUES
+(1, 'Iluha', 'iluha@mail.ru', '95d53bf24b4c267e64fa593e5d543780', 2, 'uuQAwOjLlLVYorkvvHft'),
+(2, 'valera', 'valera@mail.ru', 'qweqwe11', 1, ''),
+(3, 'gena', 'gena@mail.ru', 'qweqwe11', 1, ''),
+(4, 'vasya', 'vasa@mail.ru', 'qweqwe11', 1, '');
 
 -- --------------------------------------------------------
 
@@ -59,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `id_employee` int(11) NOT NULL,
   `id_room` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Дамп данных таблицы `events`
@@ -67,7 +66,14 @@ CREATE TABLE IF NOT EXISTS `events` (
 
 INSERT INTO `events` (`id`, `description`, `id_employee`, `id_room`) VALUES
 (1, 'eqwewqeqweqweqwe', 2, 1),
-(2, 'asdasdasdasdasd', 3, 2);
+(2, 'asdasdasdasdasd', 3, 2),
+(3, 'qwewqeqwewa', 2, 3),
+(4, 'sdasdadas', 3, 3),
+(5, 'ccccccccccccccccccccc', 2, 2),
+(6, 'sssssssssssssssss', 3, 3),
+(7, 'xxxxxxxxxxx', 3, 2),
+(8, 'bnmbnm', 2, 1),
+(9, 'vcbcvb', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -87,7 +93,16 @@ CREATE TABLE IF NOT EXISTS `event_details` (
 
 INSERT INTO `event_details` (`id`, `start`, `end`) VALUES
 (1, '2017-10-31 16:00:00', '2017-10-31 17:00:00'),
-(2, '2017-10-31 18:00:00', '2017-10-31 19:00:00');
+(2, '2017-10-31 18:00:00', '2017-10-31 19:00:00'),
+(3, '2017-11-07 09:30:00', '2017-11-07 10:30:00'),
+(4, '2017-11-07 12:00:00', '2017-11-07 13:00:00'),
+(5, '2017-11-02 13:00:00', '2017-11-02 15:00:00'),
+(5, '2017-11-09 13:00:00', '2017-11-09 15:00:00'),
+(6, '2017-11-03 08:00:00', '2017-11-03 12:00:00'),
+(6, '2017-11-17 08:00:00', '2017-11-17 12:00:00'),
+(7, '2017-11-27 12:00:00', '2017-11-27 14:00:00'),
+(8, '2017-11-09 09:00:00', '2017-11-09 11:00:00'),
+(9, '2017-11-14 11:00:00', '2017-11-14 13:00:00');
 
 -- --------------------------------------------------------
 
