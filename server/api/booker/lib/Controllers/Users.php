@@ -12,17 +12,24 @@ class Users
 
     public function getUsers($params = null)
     {
+        //toDo dobavit autentifikaciu
         return $this->model->getUsers($params);
     }
 
-    public function postUsers()
+    public function postUsers(array $params)
     {
-        return $this->model->addUser();
+       // dump($params);exit;
+        if(\Models\Auth::isAdmin())
+        {
+            return $this->model->addUser($params);
+        }
     }
+    
     public function putUsers()
     {
         return $this->model->editUser();
     }
+    
     public function deleteUsers()
     {
         return $this->model->deleteUser();

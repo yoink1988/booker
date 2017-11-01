@@ -17,11 +17,11 @@ else
 {
 	define('RUN_MODE', MODE_DEV);
 
-	define ('DB_HOST','mysql:host=localhost;dbname=booker;charset=utf8');
-	define ('DB_USER','root');
-	define ('DB_PWD','');
+#	define ('DB_HOST','mysql:host=localhost;dbname=booker;charset=utf8');
+#	define ('DB_USER','root');
+#	define ('DB_PWD','');
 
-//define ('DB_HOST','mysql:host=localhost;dbname=user9;charset=utf8');
-//define ('DB_USER','user9');
-//define ('DB_PWD','tuser9');
+define ('DB_HOST','mysql:host=localhost;dbname=user9;charset=utf8');
+define ('DB_USER','user9');
+define ('DB_PWD','tuser9');
 }

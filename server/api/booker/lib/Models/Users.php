@@ -12,7 +12,7 @@ class Users
 
     public function getUsers($params = null)
     {
-        $query = \database\QSelect::instance()->setColumns('id, login, email, pass')
+        $query = \database\QSelect::instance()->setColumns('id, name, email')
                                             ->setTable('employees');
 
         if($params['id'])
@@ -26,6 +26,10 @@ class Users
     
     public function addUser($params)
     {
+        //toDo dobavit VALIDATSIU
+        $params['id_role'] = '1';
+        $params['pass'] = md5($params['pass']);
+
         $query = \database\QInsert::instance()->setTable('employees')
                                             ->setParams($params);
 
