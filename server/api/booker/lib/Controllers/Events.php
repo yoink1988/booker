@@ -19,8 +19,6 @@ class Events
 			$arr['start'] = $start->format('Y-m-d 08-00-00');
 			$arr['end'] = $start->format('Y-m-t 20-00-00');
 			$arr['id_room'] = $params['room'];
-//			dump($arr);
-//			exit;
 		}
 		return $this->model->getEvents($arr);
 	}

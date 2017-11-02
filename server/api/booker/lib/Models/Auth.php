@@ -90,15 +90,20 @@ class Auth
 
         $db = \database\Database::getInstance();
 
-        $id = $db->clearString($_SERVER['PHP_AUTH_USER']);
-        $hash = $db->clearString($_SERVER['PHP_AUTH_PW']);
+		if((isset($_SERVER['PHP_AUTH_USER'])) && (isset($_SERVER['PHP_AUTH_PW'])))
+		{
+			$id = $db->clearString($_SERVER['PHP_AUTH_USER']);
+	        $hash = $db->clearString($_SERVER['PHP_AUTH_PW']);
+		
 
-        $q = \database\QSelect::instance()->setTable('employees')->setColumns('name')
-            ->setWhere("id = {$id} and hash = {$hash} and id_role = '2'");
-        if($res = $db->select($q))
-        {
-            return true;
-        }
+			$q = \database\QSelect::instance()->setTable('employees')->setColumns('name')
+				->setWhere("id = {$id} and hash = {$hash} and id_role = ".ROLE_ADMIN);
+
+			if($res = $db->select($q))
+			{
+				return true;
+			}
+		}
         return false;
     }
 

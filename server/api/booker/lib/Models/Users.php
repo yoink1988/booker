@@ -12,7 +12,7 @@ class Users
 
     public function getUsers($params = null)
     {
-        $query = \database\QSelect::instance()->setColumns('id, name, email')
+        $query = \database\QSelect::instance()->setColumns('id, name, email, id_role, hash')
                                             ->setTable('employees');
 
         if($params['id'])
@@ -26,8 +26,19 @@ class Users
     
     public function addUser($params)
     {
-        //toDo dobavit VALIDATSIU
-        $params['id_role'] = '1';
+		if(!\Utils\Validator::validName($params['name']))
+		{
+			return 'Invalid Name';
+		}
+		if(!\Utils\Validator::validEmail($params['email']))
+		{
+			return 'Invalid Email';
+		}
+		if(!\Utils\Validator::validPassword($params['pass']))
+		{
+			return 'Invalid Password';
+		}
+        $params['id_role'] = ROLE_USER;
         $params['pass'] = md5($params['pass']);
 
         $query = \database\QInsert::instance()->setTable('employees')
@@ -38,16 +49,28 @@ class Users
 
     public function editUser($params)
     {
-        $query = \database\QUpdate::instance()->setTable('employeers')
+		if(!\Utils\Validator::validName($params['name']))
+		{
+			return 'Invalid Name';
+		}
+		if(!\Utils\Validator::validEmail($params['email']))
+		{
+			return 'Invalid Email';
+		}
+
+		$id = $this->db->clearString($params['id']);
+		unset($params['id']);
+
+        $query = \database\QUpdate::instance()->setTable('employees')
                                             ->setParams($params)
-                                            ->setWhere("id = {$params['id']}");
+                                            ->setWhere("id = {$id}");
             
-        return $this->db->update($params);
+        return $this->db->update($query);
     }
 
     public function deleteUser($params)
     {
-        $query = \database\QDelete::instance()->setTable('employeers')
+        $query = \database\QDelete::instance()->setTable('employees')
                                         ->setWhere("id = {$params['id']}");
 
         return $this->db->delete($query);
