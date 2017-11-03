@@ -88,22 +88,19 @@ class Validator
 		return false;
 	}
 
-	public static function validPrice($price)
+	public static function validTimeRange(\DateTime $tStart,\DateTime $tEnd)
 	{
-		if(!preg_match("/\b\d+\.\d{0,2}\b/", $price))
+		$valStart = clone $tStart;
+		$valEnd = clone $tEnd;
+		if($tEnd->getTimestamp() == $tStart->getTimestamp())
 		{
 			return false;
 		}
-		return true;
-	}
 
-	public static function validDiscount($disc)
-	{
-		if(!preg_match("/^[0-9]+$/", $disc))
-		{
-			return false;
-		}
-		if( ((int)$disc < 0) || ((int)$disc > 50))
+		if(($tStart->getTimestamp() < $valStart->setTime(8,0,0)->getTimestamp()) ||
+				($tStart->getTimestamp() > $valStart->setTime(20,0,0)->getTimestamp()) ||
+				($tEnd->getTimestamp() > $valEnd->setTime(20,0,0)->getTimestamp()) ||
+				($tEnd->getTimestamp() < $valEnd->setTime(8,0,0)->getTimestamp()))
 		{
 			return false;
 		}

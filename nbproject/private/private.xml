@@ -13,10 +13,10 @@
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/RestServer.php</file>
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/Controllers/Events.php</file>
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/index.php</file>
+            <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/database/Query.php</file>
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/Models/Events.php</file>
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/Models/Auth.php</file>
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/Controllers/Auth.php</file>
-            <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/functions.php</file>
             <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/config.php</file>
         </group>
     </open-files>

@@ -22,5 +22,12 @@ class Events
 		}
 		return $this->model->getEvents($arr);
 	}
+	public function postEvents($params)
+	{
+
+//		dump($params);exit;
+		return $this->model->addEvent($params);
+//		$sartDate = new \DateTime($params[2]['start']);
+	}
 }
 
