@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1
--- Время создания: Ноя 03 2017 г., 15:03
+-- Время создания: Ноя 06 2017 г., 14:27
 -- Версия сервера: 5.6.16
 -- Версия PHP: 5.5.11
 
@@ -34,18 +34,18 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `id_role` int(11) NOT NULL,
   `hash` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Дамп данных таблицы `employees`
 --
 
 INSERT INTO `employees` (`id`, `name`, `email`, `pass`, `id_role`, `hash`) VALUES
-(1, 'Iluha', 'iluha@mail.ru', '95d53bf24b4c267e64fa593e5d543780', 2, 'LhRQjeujQ1lUL2P4szg8'),
-(2, 'valera', 'valera@mail.ru', 'qweqwe11', 1, ''),
+(1, 'Iluha', 'iluha@mail.ru', '95d53bf24b4c267e64fa593e5d543780', 2, 'fZJrypu5D4621g4PheQu'),
 (3, 'gena', 'gena@mail.ru', 'qweqwe11', 1, ''),
 (4, 'vasyassdd', 'vasa@mail.ru', 'qweqwe11', 1, ''),
-(5, 'zzzz', 'zz@zz.zz', '95d53bf24b4c267e64fa593e5d543780', 1, 'hxILZdbsJekRMHDn4r5k');
+(5, 'zzzz', 'zz@zz.zz', '95d53bf24b4c267e64fa593e5d543780', 1, 'lyBBBBIhoxHVDBRlAPda'),
+(6, 'qweqweqwe', 'vasa@mdail.ru', '95d53bf24b4c267e64fa593e5d543780', 1, '');
 
 -- --------------------------------------------------------
 
@@ -56,16 +56,19 @@ INSERT INTO `employees` (`id`, `name`, `email`, `pass`, `id_role`, `hash`) VALUE
 CREATE TABLE IF NOT EXISTS `events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_room` int(11) NOT NULL,
-  `submitDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `submit` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=74 ;
 
 --
 -- Дамп данных таблицы `events`
 --
 
-INSERT INTO `events` (`id`, `id_room`, `submitDate`) VALUES
-(18, 1, '2017-11-03 12:11:59');
+INSERT INTO `events` (`id`, `id_room`, `submit`) VALUES
+(70, 1, '2017-11-07 22:42:38'),
+(71, 1, '2017-11-07 23:40:06'),
+(72, 1, '2017-11-07 23:41:13'),
+(73, 1, '2017-10-31 23:42:42');
 
 -- --------------------------------------------------------
 
@@ -86,9 +89,11 @@ CREATE TABLE IF NOT EXISTS `event_details` (
 --
 
 INSERT INTO `event_details` (`id`, `start`, `end`, `desc`, `id_employee`) VALUES
-(18, '2017-11-04 06:00:00', '2017-11-04 07:00:00', 'sdsadasdas', 2),
-(18, '2017-11-11 06:00:00', '2017-11-11 07:00:00', 'sdsadasdas', 2),
-(18, '2017-11-18 06:00:00', '2017-11-18 07:00:00', 'sdsadasdas', 2);
+(70, '2017-11-16 12:00:00', '2017-11-16 15:00:00', 'dasdasasd', 3),
+(71, '2017-11-23 12:00:00', '2017-11-23 15:00:00', 'dasdasdasd', 5),
+(71, '2017-11-30 12:00:00', '2017-11-30 15:00:00', 'dasdasdasd', 5),
+(72, '2017-11-09 12:00:00', '2017-11-09 15:00:00', 'dasdasdasd', 3),
+(73, '2017-11-02 12:00:00', '2017-11-02 16:00:00', 'sadasasd', 5);
 
 -- --------------------------------------------------------
 

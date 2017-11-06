@@ -85,7 +85,7 @@ class Database
 
 	public function selectOne(\database\QSelect $query)
 	{
-		$res = $this->select($query->getStringQuery());
+		$res = $this->select($query);
 		return $res[0];
 	}
 

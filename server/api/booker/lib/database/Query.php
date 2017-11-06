@@ -80,5 +80,10 @@ abstract class Query
 		return $this;
 	}
 
+	public function getWhere()
+	{
+		return $this->where;
+	}
+
 	abstract public function getStringQuery();
 }

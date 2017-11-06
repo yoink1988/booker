@@ -41,44 +41,6 @@ class Validator
 		return true;
 	}
 
-	public static function validCount($cnt)
-	{
-		if(!preg_match("/^[0-9]+$/", $cnt))
-		{
-			return false;
-		}
-		if((int)$cnt < 0)
-		{
-			return false;
-		}
-		return true;		
-	}
-
-	public static function validAuthName($name)
-	{
-		if(!preg_match('/^[a-zA-Z][a-zA-Z\.\s]{3,30}$/', $name))
-		{
-			return false;
-		}
-		return true;
-	}
-	public static function validGenreName($name)
-	{
-		if(!preg_match('/^[a-zA-Z][a-zA-Z\.\s]{3,30}$/', $name))
-		{
-			return false;
-		}
-		return true;
-	}
-	public static function validBookName($name)
-	{
-		if(!preg_match('/^[a-zA-Z][a-zA-Z0-9\.\s\-]{3,40}$/', $name))
-		{
-			return false;
-		}
-		return true;
-	}
-	
 	public static function validDescript($text)
 	{
 		if(mb_strlen($text) < 400 && mb_strlen($text) > 5)
@@ -97,13 +59,25 @@ class Validator
 			return false;
 		}
 
-		if(($tStart->getTimestamp() < $valStart->setTime(8,0,0)->getTimestamp()) ||
-				($tStart->getTimestamp() > $valStart->setTime(20,0,0)->getTimestamp()) ||
-				($tEnd->getTimestamp() > $valEnd->setTime(20,0,0)->getTimestamp()) ||
-				($tEnd->getTimestamp() < $valEnd->setTime(8,0,0)->getTimestamp()))
+		if(($tStart->getTimestamp() < $valStart->setTime(START_HOUR,START_MIN)->getTimestamp()) ||
+				($tStart->getTimestamp() > $valStart->setTime(END_HOUR,END_MIN)->getTimestamp()) ||
+				($tEnd->getTimestamp() > $valEnd->setTime(END_HOUR,END_MIN)->getTimestamp()) ||
+				($tEnd->getTimestamp() < $valEnd->setTime(START_HOUR,START_MIN)->getTimestamp()))
 		{
 			return false;
 		}
 		return true;
 	}
+
+	public static function isWeekend(\DateTime $tStart)
+	{
+		return (date('N', strtotime($tStart->format('Y-m-d'))) >= 6);
+	}
+
+	public static function isPastTime(\DateTime $tStart)
+	{
+		$now = new \DateTime();
+		return ($tStart->getTimestamp() < $now->getTimestamp());
+	}
+
 }

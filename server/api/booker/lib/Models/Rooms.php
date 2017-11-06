@@ -21,4 +21,5 @@ class Rooms
 
 		return $this->db->select($query);
 	}
+	
 }

@@ -4,7 +4,10 @@ include_once 'lib/functions.php';
 
 spl_autoload_register('autoload');
 
-//dump($_SERVER);
+
+//$time = new \DateTime();
+//$time->setTime(13,00);
+//dump($time->format('H:i:s'));
 //exit;
 try{
 	header('Access-Control-Allow-Origin: *');

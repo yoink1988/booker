@@ -36,8 +36,8 @@ class Users
         return $this->model->editUser($params);
     }
     
-    public function deleteUsers()
+    public function deleteUsers($params)
     {
-        return $this->model->deleteUser();
+        return $this->model->deleteUser($params['id']);
     }
 }

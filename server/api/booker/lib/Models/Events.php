@@ -10,36 +10,79 @@ class Events
 		$this->db = \database\Database::getInstance();
 	}
 
+	public function getEvent($id, $count = false)
+	{
+		$q = \database\QSelect::instance()->setColumns('e.id, ed.desc as descr, e.submit, ed.id_employee as u_id, '
+													 . 'emp.name as u_name, ed.start, ed.end')
+											->setTable('events e')
+											->setJoin('left join event_details ed on e.id = ed.id '
+													. 'left join employees emp on ed.id_employee = emp.id')
+											->setWhere("e.id = {$this->db->clearString($id)}"
+													 . " and ed.start > NOW()");
+
+		if($count)
+		{
+			return $this->db->selectCount($q);
+		}
+		return $this->db->select($q);
+	}
+
 	public function getEvents($params)
 	{
-		$query = \database\QSelect::instance()->setColumns('e.id, ed.desc as descr, '
-														. 'ed.id_employee as u_id, e.id_room as room_id,'
-														. ' emp.name as u_name, r.name as room_name, ed.start, ed.end')
+		$query = \database\QSelect::instance()->setColumns('e.id, ed.desc as descr, e.submit, '
+														. 'ed.id_employee as u_id, e.id_room as room_id, '
+														. 'emp.name as u_name, r.name as room_name, '
+														. 'ed.start, ed.end')
 											  ->setTable('events e')
 											  ->setJoin('left join event_details ed on e.id = ed.id '
 													  . 'left join rooms r on r.id = e.id_room '
 													  . 'left join employees emp on ed.id_employee = emp.id')
-												->setWhere("ed.start between {$this->db->clearString($params['start'])} and {$this->db->clearString($params['end'])}"
-												. "and e.id_room = {$this->db->clearString($params['id_room'])}");
+												->setWhere("ed.start between {$this->db->clearString($params['start'])} "
+														. "and {$this->db->clearString($params['end'])}"
+														. "and e.id_room = {$this->db->clearString($params['id_room'])}");
 
 		return $this->db->select($query);
 
 	}
 
+	private function checkEventForm(array $params)
+	{
+		$mainStart = $this->getTStamp($params['details']['start']);
+		$mainEnd = $this->getTStamp($params['details']['end']);
+
+		if(\Utils\Validator::isWeekend($mainStart))
+		{
+			return ERR_WEEKEND_DAY;
+		}
+
+		if(!\Utils\Validator::validTimeRange($mainStart, $mainEnd))
+		{
+			return ERR_AVALIABLE_TIME;
+		}
+
+		if(\Utils\Validator::isPastTime($mainStart))
+		{
+			return ERR_PAST_TIME;
+		}
+		
+		if(!\Utils\Validator::validDescript($params['details']['descr']))
+		{
+			return ERR_DESCRIPTION;
+		}
+	}
+
+
 	public function addEvent(array $params)
 	{
+		if($error = $this->checkEventForm($params))
+		{
+			return $error;
+		}
 		$id_room = $params['id_room'];
 		$id_emp = $params['details']['id_emp'];
 		$desc = $params['details']['descr'];
 		$mainStart = $this->getTStamp($params['details']['start']);
 		$mainEnd = $this->getTStamp($params['details']['end']);
-
-
-		if(!\Utils\Validator::validTimeRange($mainStart, $mainEnd))
-		{
-			return 'Avalibale time 8:00 - 20:00';
-		}
-
 
 		if($id = $this->addMainEvent($mainStart ,$mainEnd, $id_room, $id_emp, $desc))
 		{
@@ -55,39 +98,44 @@ class Events
 						return $res;
 					}
 				}
-				return 'Added';
+				return SUCCESS;
 			}
 			return false;
 		}
-		$string = 'Room already booked at this time '.$mainStart->format('Y-m-d H:i');
+		$string = ERR_ALREADY_BOOKED.$mainStart->format('Y-m-d H:i');
 		return $string;
 	}
 
-	private function isTimeAvaliable(\DateTime $start, \DateTime $end, $id_room)
+	private function isTimeAvaliable(\DateTime $start, \DateTime $end, $id_room, $id_event = null)
 	{
 		$q = \database\QSelect::instance()->setColumns('start, end')
-										->setTable('event_details')
-										->setJoin("left join events on events.id = event_details.id "
-												. "left join rooms on events.id_room = rooms.id")
-										->setWhere("start between '{$start->format('Y-m-d 08:00:00')}' and '{$start->format('Y-m-d 20:00:00')}' "
-										. "and events.id_room = {$id_room}");
+										 ->setTable('event_details')
+										 ->setJoin("left join events on events.id = event_details.id "
+												 . "left join rooms on events.id_room = rooms.id")
+										 ->setWhere("start between '{$start->format('Y-m-d '.SQL_START_TIME)}' "
+												  . "and '{$start->format('Y-m-d '.SQL_END_TIME)}' "
+												  . "and events.id_room = {$id_room}");
 
-		if(!$res = $this->db->select($q))
+		if($id_event)
+		{
+			$q->setWhere($q->getWhere()." and event_details.id != {$id_event}");
+		}
+		if(!$events = $this->db->select($q))
 		{
 			return true;
 		}
-		foreach($res as $ev)
+		foreach($events as $ev)
 		{
-			if(((new \DateTime($ev['start']) <= $start) && (new \DateTime($ev['end']) <= $start)) 
-			|| ((new \DateTime($ev['start']) >= $end)   && (new \DateTime($ev['end']) >= $end)))
+			if(!(((new \DateTime($ev['start']) < $start) && (new \DateTime($ev['end']) <= $start))
+			|| ((new \DateTime($ev['start']) >= $end)   && (new \DateTime($ev['end']) > $end))))
 			{
-				return true;
+				return false;
 			}
-			return false;
 		}
+		return true;
 	}
 
-	private function addMainEvent($mainStart, $mainEnd, $id_room)//, $id_emp, $desc
+	private function addMainEvent($mainStart, $mainEnd, $id_room)
 	{
 		if($this->isTimeAvaliable($mainStart, $mainEnd, $id_room))
 		{
@@ -108,13 +156,13 @@ class Events
 		return $date;
 	}
 
-	private function AddEventDetails($id, $mainStart, $mainEnd, $desc, $id_emp) //
+	private function AddEventDetails($id, $mainStart, $mainEnd, $desc, $id_emp) 
 	{
 		$q = \database\QInsert::instance()->setTable('event_details')
 										  ->setParams(array(
 															'id'=> $id,
-															'start' => $mainStart->format('Y-m-d H:i:s'),
-															'end' => $mainEnd->format('Y-m-d H:i:s'),
+															'start' => $mainStart->format(SQL_FORMAT),
+															'end' => $mainEnd->format(SQL_FORMAT),
 															'id_employee' => $id_emp,
 															'desc' => $desc));
 		return $this->db->insert($q);
@@ -127,13 +175,20 @@ class Events
 		{
 			$mainStart->modify($offset);
 			$mainEnd->modify($offset);
-			if($this->isTimeAvaliable($mainStart, $mainEnd, $id_room))
+			if(!\Utils\Validator::isWeekend($mainStart))
 			{
-				$this->AddEventDetails($id, $mainStart, $mainEnd, $desc, $id_emp);
+				if($this->isTimeAvaliable($mainStart, $mainEnd, $id_room))
+				{
+					$this->AddEventDetails($id, $mainStart, $mainEnd, $desc, $id_emp);
+				}
+				else
+				{
+					$err[] = ERR_ALREADY_BOOKED.$mainStart->format(SQL_FORMAT).', not booked';
+				}
 			}
 			else
 			{
-				$err[] = 'Room already booked at this time '.$mainStart->format('Y-m-d H:i');
+				$err[] = ERR_WEEKEND_DAY.$mainStart->format('Y-m-d').', not booked';
 			}
 		}
 		return $err;
@@ -152,8 +207,141 @@ class Events
 			case 'monthly':
 				$offset = '+1 month';
 				break;
+			default :
+				throw new \Exception(400);
 		}
 		return $offset;
 	}
+
+
+
+
+	public function updateEvents(array $params)
+	{
+		if($error = $this->checkEventForm(array ('details' => array('start' => $params['details']['timeStart'],
+																	'end' => $params['details']['timeEnd'],
+																	'descr' => $params['details']['desc']))))
+		{
+			return $error;
+		}
+		$occur = false;
+		$id = $params['id'];
+		$idRoom = $params['id_room'];
+		if(isset($params['occur']))
+		{
+			$occur = true;
+		}
+
+		$params = $params['details'];
+		$params['timeStart'] = $this->getTStamp($params['timeStart']);
+		$params['timeEnd'] = $this->getTStamp($params['timeEnd']);
+		$params['startPoint'] = $this->getTStamp($params['startPoint']);
+		if(!$occur)
+		{
+			return $this->updateEvent($id, $idRoom, $params);
+		}
+
+		$res = $this->updateOccurEvents($id, $idRoom, $params);
+		if(!$res)
+		{
+			return true;
+		}
+		return $res;
+	}
+
+	private function updateOccurEvents($id, $idRoom, array $params)
+	{
+		if($events = $this->getOccurentEvents($params['startPoint'], $id))
+		{
+			$err = [];
+			foreach($events as $event)
+			{
+				$tmpArr['timeStart'] = new \DateTime($event['start']);
+				$tmpArr['timeStart']->setTime((int)$params['timeStart']->format('H'), (int)$params['timeStart']->format('i'));
+				$tmpArr['timeEnd'] = new \DateTime($event['end']);
+				$tmpArr['timeEnd']->setTime((int)$params['timeEnd']->format('H'), (int)$params['timeEnd']->format('i'));
+
+				$tmpArr['desc'] = $params['desc'];
+				$tmpArr['id_user'] = $params['id_user'];
+				$tmpArr['startPoint'] = new \DateTime($event['start']);
+
+				$res = $this->updateEvent($id, $idRoom, $tmpArr);
+				if(!is_bool($res))
+				{
+					$err[] = $res;
+				}
+			}
+			return $err;
+		}
+		return false;
+	}
+	
+	private function getOccurentEvents(\DateTime $start ,$id)
+	{
+		$q = \database\QSelect::instance()->setTable('event_details')
+										->setColumns('start, end, `desc`, id_employee')
+										->setWhere("id = {$id} and start > now() "
+												 . "and start >= '{$start->format(SQL_FORMAT)}'");
+
+		return $this->db->select($q);
+	}
+
+	private function updateEvent($id, $idRoom, array $params)
+	{
+		if($this->isTimeAvaliable($params['timeStart'], $params['timeEnd'], $idRoom, $id))
+		{
+			$q = \database\QUpdate::instance()->setTable('event_details')
+												->setParams(array(
+													'start' => $params['timeStart']->format(SQL_FORMAT),
+													'end' => $params['timeEnd']->format(SQL_FORMAT),
+													'id_employee' => $params['id_user'],
+													'desc' => $params['desc']))
+													->setWhere("start = '{$params['startPoint']->format(SQL_FORMAT)}'");
+
+			return $this->db->update($q);
+		}
+		else
+		{
+			return ERR_ALREADY_BOOKED.$params['timeStart']->format('Y-m-d H:i');
+		}
+	}
+
+	public function deleteEvents(array $params)
+	{
+		$id = $this->db->clearString($params['id']);
+		$startPoint = $this->getTStamp($params['from']);
+
+		$q = \database\QDelete::instance()->setTable('event_details')
+										->setWhere("id = {$params['id']}");
+
+		if(!isset($params['all']))
+		{
+			$q->setWhere($q->getWhere()." and start = '{$startPoint->format(SQL_FORMAT)}'")->setLimit('1');
+		}
+		else
+		{
+			$q->setWhere($q->getWhere()." and start > now() and start >= '{$startPoint->format(SQL_FORMAT)}'");
+		}
+
+		if($this->db->delete($q))
+		{
+			return $this->clearEvents($id);
+		}
+		return false;
+	}
+
+	private function clearEvents($id)
+	{
+		$qs = \database\QSelect::instance()->setTable('event_details')->setColumns('id')->setWhere("id = {$id}");
+
+		$res = $this->db->select($qs);
+		if(!$res)
+		{
+			$qd = \database\QDelete::instance()->setTable('events')->setWhere("id = {$id}");
+			return $this->db->delete($qd);
+		}
+		return true;
+	}
+
 }
 

@@ -28,3 +28,28 @@ else
 
 define('ROLE_USER', '1');
 define('ROLE_ADMIN', '2');
+
+
+
+define('START_HOUR',8);
+define('END_HOUR',20);
+define('START_MIN',0);
+define('END_MIN',0);
+
+define('SQL_START_TIME','08:00:00');
+define('SQL_END_TIME','20:00:00');
+
+define('SQL_FORMAT', 'Y-m-d H:i:s');
+
+
+define('ERR_NAME', 'Incorrect Name');
+define('ERR_EMAIL', 'Incorrect Email');
+define('ERR_PASS', 'Incorrect Password');
+define('ERR_EMAIL_EXIST', 'Email already exist');
+
+define('SUCCESS', 'SUCCESS');
+define('ERR_ALREADY_BOOKED', 'Room already booked at this time ');
+define('ERR_WEEKEND_DAY', 'No Events on weekend days ');
+define('ERR_AVALIABLE_TIME', 'Avalibale time 8:00 - 20:00');
+define('ERR_PAST_TIME', 'Cant book room on past time');
+define('ERR_DESCRIPTION', 'Check description field');

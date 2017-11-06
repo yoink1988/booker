@@ -12,22 +12,44 @@ class Events
 
 	public function getEvents($params = null)
 	{
-		if($params)
+
+		if(!isset($params['id']))
 		{
 			$start = new \DateTime();
 			$start->setDate($params['year'],$params['month'], 1);
-			$arr['start'] = $start->format('Y-m-d 08-00-00');
-			$arr['end'] = $start->format('Y-m-t 20-00-00');
+			$arr['start'] = $start->format('Y-m-d '.SQL_START_TIME);
+			$arr['end'] = $start->format('Y-m-t '.SQL_END_TIME);
 			$arr['id_room'] = $params['room'];
+			return $this->model->getEvents($arr);
 		}
-		return $this->model->getEvents($arr);
-	}
-	public function postEvents($params)
-	{
 
-//		dump($params);exit;
+		if(isset($params['id']))
+		{
+			$count = false;
+			$id = $params['id'];
+			if(isset($params['count']))
+			{
+				$count = true;
+			}
+			return $this->model->getEvent($id, $count);
+		}
+		
+	}
+
+
+	public function postEvents(array $params)
+	{
 		return $this->model->addEvent($params);
-//		$sartDate = new \DateTime($params[2]['start']);
+	}
+
+	public function putEvents(array $params)
+	{
+		return $this->model->updateEvents($params);
+	}
+
+	public function deleteEvents(array $params)
+	{
+		return $this->model->deleteEvents($params);
 	}
 }
 
