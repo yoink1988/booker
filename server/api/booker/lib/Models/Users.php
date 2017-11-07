@@ -105,7 +105,7 @@ class Users
         $query = \database\QDelete::instance()->setTable('employees')
                                         ->setWhere("id = {$id}");
 
-        if($this->db->delete($query))
+      if($this->db->delete($query))
 		{
 			return $this->deleteUsersEvents($id);
 		}
@@ -114,46 +114,55 @@ class Users
 
 	private function deleteUsersEvents($uId)
 	{
-		$qd = \database\QDelete::instance()->setTable('event_details')
-											->setWhere("id_employee = {$uId} and start > now()");
 
-		if($this->db->delete($qd))
-		{
-			if($events = $this->getUserEvents($uId))
+			if(!$events = $this->getUserEvents($uId))
 			{
 				return true;
 			}
-			return $this->clearEvents($events);
-		}
+
+			$qd = \database\QDelete::instance()->setTable('event_details')
+												->setWhere("id_employee = {$uId} and start > now()");
+
+			if($this->db->delete($qd))
+			{
+				$ids = [];
+
+				foreach ($events as $e)
+				{
+					$ids[] = $e['id'];
+				}
+
+					foreach($ids as $idEv)
+					{
+						$query = \database\QSelect::instance()->setTable('event_details')
+															->setColumns('id')
+															->setWhere("(id = {$idEv} and id_employee != {$uId} and start > now()) or ( id = {$idEv} and id_employee = {$uId} and start < now())");
+
+						if(!$exist = $this->db->select($query))
+						{
+							$this->clearEvents($idEv);
+						}
+					}
+			}
+			return true;
+
+
 	}
 
 	private function getUserEvents($uId)
 	{
-		$q = \database\QSelect::instance()->setColumns('id')->setTable('event_details')
-										->setWhere("id_employee = {$uId}");
+		$q = \database\QSelect::instance()->setColumns('distinct id')->setTable('event_details')
+										->setWhere("id_employee = {$uId} and start > now()");
 
 		return $this->db->select($q);
 	}
 
-	private function clearEvents(array $events)
+	private function clearEvents($id)
 	{
-		$err = 0;
-		$q = \database\QDelete::instance()->setTable('events');
+		$q = \database\QDelete::instance()->setTable('events')
+										->setWhere("id = {$id}");
 
-		foreach ($events as $ev)
-		{
-			$q->setWhere("id = {$ev['id']}");
-
-			if(!$this->db->delete($q))
-			{
-				$err++;
-			}
-		}
-		if($err == 0)
-		{
-			return true;
-		}
-		return false;
+		return $this->db->delete($q);
 	}
 
 }

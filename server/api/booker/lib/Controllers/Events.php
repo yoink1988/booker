@@ -10,7 +10,7 @@ class Events
 		$this->model = new \Models\Events();
 	}
 
-	public function getEvents($params = null)
+	public function getEvents(array $params)
 	{
 
 		if(!isset($params['id']))
@@ -23,15 +23,28 @@ class Events
 			return $this->model->getEvents($arr);
 		}
 
+
 		if(isset($params['id']))
 		{
+
 			$count = false;
+			$uId = false;
 			$id = $params['id'];
+
+			if(isset($params['user']))
+			{
+				$uId = $params['user'];
+			}
+			if(\Models\Auth::isAdmin())
+			{
+				$uId = null;
+			}
+
 			if(isset($params['count']))
 			{
 				$count = true;
 			}
-			return $this->model->getEvent($id, $count);
+			return $this->model->getEvent($id, $count, $uId);
 		}
 		
 	}
@@ -44,12 +57,23 @@ class Events
 
 	public function putEvents(array $params)
 	{
-		return $this->model->updateEvents($params);
+		$uId = $params['details']['id_user'];
+		if(\Models\Auth::isAdmin())
+		{
+			$uId = null;
+		}
+		return $this->model->updateEvents($params, $uId);
 	}
 
 	public function deleteEvents(array $params)
 	{
-		return $this->model->deleteEvents($params);
+		$uId = $params['user'];
+		
+		if(\Models\Auth::isAdmin())
+		{
+			$uId = null;
+		}
+		return $this->model->deleteEvents($params, $uId);
 	}
 }
 

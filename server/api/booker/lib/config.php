@@ -17,13 +17,13 @@ else
 {
 	define('RUN_MODE', MODE_DEV);
 
-//	define ('DB_HOST','mysql:host=localhost;dbname=booker;charset=utf8');
-//	define ('DB_USER','root');
-//	define ('DB_PWD','');
+	define ('DB_HOST','mysql:host=localhost;dbname=booker;charset=utf8');
+	define ('DB_USER','root');
+	define ('DB_PWD','');
 
-define ('DB_HOST','mysql:host=localhost;dbname=user9;charset=utf8');
-define ('DB_USER','user9');
-define ('DB_PWD','tuser9');
+//define ('DB_HOST','mysql:host=localhost;dbname=user9;charset=utf8');
+//define ('DB_USER','user9');
+//define ('DB_PWD','tuser9');
 }
 
 define('ROLE_USER', '1');
@@ -53,3 +53,4 @@ define('ERR_WEEKEND_DAY', 'No Events on weekend days ');
 define('ERR_AVALIABLE_TIME', 'Avalibale time 8:00 - 20:00');
 define('ERR_PAST_TIME', 'Cant book room on past time');
 define('ERR_DESCRIPTION', 'Check description field');
+define('ERR_SELF_DELETE', 'You cant delete yourself');

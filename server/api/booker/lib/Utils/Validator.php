@@ -54,7 +54,7 @@ class Validator
 	{
 		$valStart = clone $tStart;
 		$valEnd = clone $tEnd;
-		if($tEnd->getTimestamp() == $tStart->getTimestamp())
+		if($tEnd->getTimestamp() <= $tStart->getTimestamp())
 		{
 			return false;
 		}

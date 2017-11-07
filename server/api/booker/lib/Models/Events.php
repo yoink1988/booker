@@ -10,8 +10,9 @@ class Events
 		$this->db = \database\Database::getInstance();
 	}
 
-	public function getEvent($id, $count = false)
+	public function getEvent($id, $count = false, $uId = false)
 	{
+				
 		$q = \database\QSelect::instance()->setColumns('e.id, ed.desc as descr, e.submit, ed.id_employee as u_id, '
 													 . 'emp.name as u_name, ed.start, ed.end')
 											->setTable('events e')
@@ -19,15 +20,22 @@ class Events
 													. 'left join employees emp on ed.id_employee = emp.id')
 											->setWhere("e.id = {$this->db->clearString($id)}"
 													 . " and ed.start > NOW()");
+//										
+
+		if($uId)
+		{
+			$q->setWhere($q->getWhere()." and emp.id = {$this->db->clearString($uId)}");
+		}
 
 		if($count)
 		{
+//				dump($q->getStringQuery());exit;
 			return $this->db->selectCount($q);
 		}
 		return $this->db->select($q);
 	}
 
-	public function getEvents($params)
+	public function getEvents(array $params)
 	{
 		$query = \database\QSelect::instance()->setColumns('e.id, ed.desc as descr, e.submit, '
 														. 'ed.id_employee as u_id, e.id_room as room_id, '
@@ -216,7 +224,7 @@ class Events
 
 
 
-	public function updateEvents(array $params)
+	public function updateEvents(array $params, $uId = null)
 	{
 		if($error = $this->checkEventForm(array ('details' => array('start' => $params['details']['timeStart'],
 																	'end' => $params['details']['timeEnd'],
@@ -238,10 +246,10 @@ class Events
 		$params['startPoint'] = $this->getTStamp($params['startPoint']);
 		if(!$occur)
 		{
-			return $this->updateEvent($id, $idRoom, $params);
+			return $this->updateEvent($id, $idRoom, $params, $uId);
 		}
 
-		$res = $this->updateOccurEvents($id, $idRoom, $params);
+		$res = $this->updateOccurEvents($id, $idRoom, $params, $uId);
 		if(!$res)
 		{
 			return true;
@@ -249,9 +257,9 @@ class Events
 		return $res;
 	}
 
-	private function updateOccurEvents($id, $idRoom, array $params)
+	private function updateOccurEvents($id, $idRoom, array $params, $uId = null)
 	{
-		if($events = $this->getOccurentEvents($params['startPoint'], $id))
+		if($events = $this->getOccurentEvents($params['startPoint'], $id, $uId))
 		{
 			$err = [];
 			foreach($events as $event)
@@ -265,7 +273,7 @@ class Events
 				$tmpArr['id_user'] = $params['id_user'];
 				$tmpArr['startPoint'] = new \DateTime($event['start']);
 
-				$res = $this->updateEvent($id, $idRoom, $tmpArr);
+				$res = $this->updateEvent($id, $idRoom, $tmpArr, $uId);
 				if(!is_bool($res))
 				{
 					$err[] = $res;
@@ -276,17 +284,21 @@ class Events
 		return false;
 	}
 	
-	private function getOccurentEvents(\DateTime $start ,$id)
+	private function getOccurentEvents(\DateTime $start ,$id, $uId = null)
 	{
 		$q = \database\QSelect::instance()->setTable('event_details')
 										->setColumns('start, end, `desc`, id_employee')
 										->setWhere("id = {$id} and start > now() "
 												 . "and start >= '{$start->format(SQL_FORMAT)}'");
+		if($uId)
+		{
+			$q->setWhere($q->getWhere()." and id_employee = {$this->db->clearString($uId)}");
+		}
 
 		return $this->db->select($q);
 	}
 
-	private function updateEvent($id, $idRoom, array $params)
+	private function updateEvent($id, $idRoom, array $params, $uId=null)
 	{
 		if($this->isTimeAvaliable($params['timeStart'], $params['timeEnd'], $idRoom, $id))
 		{
@@ -297,6 +309,10 @@ class Events
 													'id_employee' => $params['id_user'],
 													'desc' => $params['desc']))
 													->setWhere("start = '{$params['startPoint']->format(SQL_FORMAT)}'");
+		if($uId)
+		{
+			$q->setWhere($q->getWhere()." and id_employee = {$this->db->clearString($uId)}");
+		}
 
 			return $this->db->update($q);
 		}
@@ -306,7 +322,7 @@ class Events
 		}
 	}
 
-	public function deleteEvents(array $params)
+	public function deleteEvents(array $params, $uId = null)
 	{
 		$id = $this->db->clearString($params['id']);
 		$startPoint = $this->getTStamp($params['from']);
@@ -321,6 +337,10 @@ class Events
 		else
 		{
 			$q->setWhere($q->getWhere()." and start > now() and start >= '{$startPoint->format(SQL_FORMAT)}'");
+			if($uId)
+			{
+				$q->setWhere($q->getWhere()." and id_employee = {$this->db->clearString($uId)}");
+			}
 		}
 
 		if($this->db->delete($q))

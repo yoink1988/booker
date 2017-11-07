@@ -62,7 +62,7 @@ class Auth
 
     public function checkAuth($params)
     {
-        $q = \database\QSelect::instance()->setColumns('id_role')->setTable('employees')
+        $q = \database\QSelect::instance()->setColumns('id')->setTable('employees')
             ->setWhere("id = {$this->db->clearString($params['id'])}"
             . " and hash = {$this->db->clearString($params['hash'])}");
 
@@ -87,14 +87,12 @@ class Auth
 
     public static function isAdmin()
     {
-
         $db = \database\Database::getInstance();
 
 		if((isset($_SERVER['PHP_AUTH_USER'])) && (isset($_SERVER['PHP_AUTH_PW'])))
 		{
 			$id = $db->clearString($_SERVER['PHP_AUTH_USER']);
 	        $hash = $db->clearString($_SERVER['PHP_AUTH_PW']);
-		
 
 			$q = \database\QSelect::instance()->setTable('employees')->setColumns('name')
 				->setWhere("id = {$id} and hash = {$hash} and id_role = ".ROLE_ADMIN);

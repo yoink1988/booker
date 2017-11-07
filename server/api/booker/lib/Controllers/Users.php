@@ -32,12 +32,19 @@ class Users
     
     public function putUsers(array $params)
     {
-//		 dump($params);exit;
+        if(!\Models\Auth::isAdmin())
+        {
+			throw new \Exception(403);
+		}
         return $this->model->editUser($params);
     }
     
     public function deleteUsers($params)
     {
+		if($_SERVER['PHP_AUTH_USER'] == $params['id'])
+		{
+			return ERR_SELF_DELETE;
+		}
         return $this->model->deleteUser($params['id']);
     }
 }
