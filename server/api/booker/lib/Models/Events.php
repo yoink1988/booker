@@ -106,7 +106,7 @@ class Events
 						return $res;
 					}
 				}
-				return SUCCESS;
+				return true;
 			}
 			return false;
 		}
