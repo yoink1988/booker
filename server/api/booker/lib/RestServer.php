@@ -61,7 +61,7 @@ class RestServer
 		}
 	}
 
-	public function parseUrl()
+	private function parseUrl()
 	{
 		$arrayUrl = explode('/api/', $this->url);
         $this->class = '\Controllers\\'.ucfirst(array_shift(explode('/', $arrayUrl[1])));

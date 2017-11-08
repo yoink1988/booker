@@ -24,13 +24,10 @@ class Auth
 
 	public function putAuth($params)
 	{
-//		dump(md5('qweqwe11'));
-//		exit;
 		if($this->model->checkLogData($params))
 		{
 			return $this->model->login($params);
 		}
 		return false;
 	}
-
 }

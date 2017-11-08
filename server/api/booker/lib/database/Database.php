@@ -114,7 +114,8 @@ class Database
 
 	/**
 	 *
-	 * @param  $str
+	 * @param string $str
+	 * @return string, quoted string
 	 */
     public function clearString($str)
     {

@@ -80,4 +80,30 @@ class Validator
 		return ($tStart->getTimestamp() < $now->getTimestamp());
 	}
 
+	public static function validDuration($type, $value)
+	{
+		switch ($type)
+		{
+			case 'weekly':
+				if((int)$value > 3)
+				{
+					return false;
+				}
+				return true;
+			case 'be-weekly':
+				if((int)$value > 2)
+				{
+					return false;
+				}
+				return true;
+			case 'monthly':
+				if((int)$value != 1)
+				{
+					return false;
+				}
+				return true;
+			default :
+				throw new Exception(400);
+		}
+	}
 }

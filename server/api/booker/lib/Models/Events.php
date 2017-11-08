@@ -86,6 +86,13 @@ class Events
 		{
 			return $error;
 		}
+		if(isset($params['reccuring']))
+		{
+			if(!\Utils\Validator::validDuration($params['reccuring']['type'], $params['reccuring']['duration']))
+			{
+				return ERR_DURATION;
+			}
+		}
 		$id_room = $params['id_room'];
 		$id_emp = $params['details']['id_emp'];
 		$desc = $params['details']['descr'];
