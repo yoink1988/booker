@@ -45,6 +45,6 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 	
 	public  function testValidDescriptTrue()
 	{
-		$this->assertTrue(\Utils\Validator::validDescript('Kniga o Frodo'));
+		$this->assertTrue(\Utils\Validator::validDescript('Green peace meeting'));
 	}
 }
