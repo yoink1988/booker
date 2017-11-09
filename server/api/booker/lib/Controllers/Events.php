@@ -1,15 +1,28 @@
 <?php
 namespace Controllers;
 
+/**
+ * Events Controller
+ */
 class Events
 {
+	/** @var \Models\Events */
 	public $model;
 
+	/**
+	 * gets instance of \Models\Events
+	 */
 	public function __construct()
 	{
 		$this->model = new \Models\Events();
 	}
 
+	/**
+	 * main GET request logic
+	 *
+	 * @param array $params
+	 * @return type
+	 */
 	public function getEvents(array $params)
 	{
 
@@ -50,11 +63,23 @@ class Events
 	}
 
 
+	/**
+	 * main POST request logic
+	 *
+	 * @param array $params
+	 * @return type
+	 */
 	public function postEvents(array $params)
 	{
 		return $this->model->addEvent($params);
 	}
 
+	/**
+	 * main PUT request logic
+	 *
+	 * @param array $params
+	 * @return type
+	 */
 	public function putEvents(array $params)
 	{
 		$uId = $params['details']['id_user'];
@@ -65,6 +90,12 @@ class Events
 		return $this->model->updateEvents($params, $uId);
 	}
 
+	/**
+	 * main DELETE request logic
+	 *
+	 * @param array $params
+	 * @return type
+	 */
 	public function deleteEvents(array $params)
 	{
 		$uId = $params['user'];

@@ -25,7 +25,6 @@ abstract class Query
 	/** @var array params*/
 	protected $params = array();
 	
-
 	public function setTable($table)
 	{
 		$this->table = $table;
@@ -85,5 +84,8 @@ abstract class Query
 		return $this->where;
 	}
 
+	/**
+	 * should return a builded query string
+	 */
 	abstract public function getStringQuery();
 }

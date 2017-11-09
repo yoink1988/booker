@@ -2,13 +2,13 @@
 namespace database;
 /**
  * Description of Database
- *
+ * DB class
  * @author yoink
  */
 class Database
 {
+	/** @var self */
 	private static $instance = null;
-
 	private $lastExecResult = 0;
 
 	/** @var \PDO */
@@ -37,6 +37,12 @@ class Database
 		return self::$instance = new self($pdo);
 	}
 
+	/**
+	 * Executs SELECT queries
+	 *
+	 * @param \database\QSelect $query
+	 * @return array
+	 */
 	public function select(\database\QSelect $query)
 	{
 		$stmnt = $this->pdo->query($query->getStringQuery());
@@ -52,6 +58,12 @@ class Database
 		return $result;
 	}
 
+	/**
+	 * Executs INSERT queries
+	 *
+	 * @param \database\QInsert $query
+	 * @return boolean
+	 */
 	public function insert(\database\QInsert $query)
 	{
 		$res = $this->pdo->exec($query->getStringQuery());
@@ -59,6 +71,12 @@ class Database
 		return $res !== false;
 	}
 
+	/**
+	 *  Executs DELETE queries
+	 *
+	 * @param \database\QDelete $query
+	 * @return boolean
+	 */
 	public function delete(\database\QDelete $query)
 	{
 		$res = $this->pdo->exec($query->getStringQuery());
@@ -66,6 +84,12 @@ class Database
 		return $res !==false;
 	}
 
+	/**
+	 * Executs UPDATE queries
+	 *
+	 * @param \database\QUpdate $query
+	 * @return type
+	 */
 	public function update(\database\QUpdate $query)
 	{
 		$res = $this->pdo->exec($query->getStringQuery());
@@ -73,27 +97,52 @@ class Database
 		return $res !==false;
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	public function getAffectedRows()
 	{
 		return $this->lastExecResult;
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	public function getLastInsertID()
 	{
 		return $this->pdo->lastInsertId();
 	}
 
+	/**
+	 * gets one row from selec array
+	 *
+	 * @param \database\QSelect $query
+	 * @return array
+	 */
 	public function selectOne(\database\QSelect $query)
 	{
 		$res = $this->select($query);
 		return $res[0];
 	}
 
+	/**
+	 *
+	 * @param \database\QSelect $query
+	 * @return array
+	 */
 	public function selectField(\database\QSelect $query)
 	{
 		return array_shift($this->selectOne($query));
 	}
-	
+
+	/**
+	 * count of rows in select query
+	 *
+	 * @param \database\QSelect $query
+	 * @return int
+	 */
 	public function selectCount(\database\QSelect $query)
 	{
 		$query = clone $query;
@@ -101,6 +150,10 @@ class Database
 		return (int)$this->selectField($query);
 	}
 
+	/**
+	 *
+	 * @return string
+	 */
 	public function getError()
 	{
 		$errInfo = $this->pdo->errorInfo();
@@ -121,14 +174,4 @@ class Database
     {
         return $this->pdo->quote($str);
     }
-
-	public function clearParams(array $params)
-	{
-		$cleared = [];
-		foreach ($params as $k => $v)
-		{
-			$cleared[$k] = $this->pdo->quote($v);
-		}
-		return $cleared;
-	}
 }

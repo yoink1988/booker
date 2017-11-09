@@ -2,20 +2,29 @@
 namespace Models;
 /**
  * Description of Auth
- *
+ * Auth Model
  * @author yoink
  */
 class Auth
 {
-
+	/** @var \database\Database */
     private $db;
 
+	/**
+	* gets instance of \database\Database
+	*/
     public function __construct()
     {
         $this->db = \database\Database::getInstance();
     }
 
-    public function checkLogData($params)
+	/**
+	 * checks user\password in db
+	 *
+	 * @param array $params
+	 * @return boolean
+	 */
+    public function checkLogData(array $params)
     {
         if(!\Utils\Validator::validEmail($params['login']))
         {
@@ -41,30 +50,48 @@ class Auth
         return false;
     }
 
-    public function login($params)
+	/**
+	 * login operation
+	 *
+	 * @param array $params
+	 * @return boolean false | array of users data
+	 */
+    public function login(array $params)
     {
         $params['hash'] = $this->generateHash();
 
-        $q = \database\QUpdate::instance()->setTable('employees')->setParams(array('hash' => "{$params['hash']}"))
-            ->setWhere("email = {$this->db->clearString($params['login'])}");
+        $q = \database\QUpdate::instance()
+								->setTable('employees')
+								->setParams(array('hash' => "{$params['hash']}"))
+								->setWhere("email = {$this->db->clearString($params['login'])}");
 
 
         if($res = $this->db->update($q))
         {
-            $q = \database\QSelect::instance()->setColumns('id, name, email, id_role, hash')->setTable('employees')
-                ->setWhere("email = {$this->db->clearString($params['login'])} "
-                . "and pass = {$this->db->clearString(md5($params['pass']))}");
+            $q = \database\QSelect::instance()
+					->setColumns('id, name, email, id_role, hash')
+					->setTable('employees')
+					->setWhere("email = {$this->db->clearString($params['login'])} "
+							 . "and pass = {$this->db->clearString(md5($params['pass']))}");
 
             return $this->db->select($q);
         }
         return false;
     }
 
-    public function checkAuth($params)
+	/**
+	 * autentification check
+	 *
+	 * @param array $params
+	 * @return boolean
+	 */
+    public function checkAuth(array $params)
     {
-        $q = \database\QSelect::instance()->setColumns('id')->setTable('employees')
-            ->setWhere("id = {$this->db->clearString($params['id'])}"
-            . " and hash = {$this->db->clearString($params['hash'])}");
+        $q = \database\QSelect::instance()
+								->setColumns('id')
+								->setTable('employees')
+								->setWhere("id = {$this->db->clearString($params['id'])}"
+								. " and hash = {$this->db->clearString($params['hash'])}");
 
         if($res = $this->db->select($q))
         {
@@ -73,6 +100,12 @@ class Auth
         return false;
     }
 
+	/**
+	 * generates hash of $length symbols
+	 *
+	 * @param int $length
+	 * @return string
+	 */
     private function generateHash($length=20)
     {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
@@ -85,6 +118,11 @@ class Auth
         return $code;
     }
 
+	/**
+	 * admin autentification check
+	 *
+	 * @return boolean
+	 */
     public static function isAdmin()
     {
         $db = \database\Database::getInstance();
@@ -94,8 +132,11 @@ class Auth
 			$id = $db->clearString($_SERVER['PHP_AUTH_USER']);
 	        $hash = $db->clearString($_SERVER['PHP_AUTH_PW']);
 
-			$q = \database\QSelect::instance()->setTable('employees')->setColumns('name')
-				->setWhere("id = {$id} and hash = {$hash} and id_role = ".ROLE_ADMIN);
+			$q = \database\QSelect::instance()
+									->setTable('employees')
+									->setColumns('name')
+									->setWhere("id = {$id} and hash = {$hash} "
+											. "and id_role = ".ROLE_ADMIN);
 
 			if($res = $db->select($q))
 			{

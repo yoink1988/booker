@@ -3,16 +3,24 @@ namespace database;
 
 /**
  * Description of QSelect
- *
+ * class for SELECT query
  * @author yoink
  */
 class QSelect extends Query
 {
+	/**
+	 *
+	 * @return \self
+	 */
 	public static function instance()
 	{
 		return new self();
 	}
 
+	/**
+	 *
+	 * @return string SELECT query
+	 */
 	public function getStringQuery()
 	{
 		$query = '';

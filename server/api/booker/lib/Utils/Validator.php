@@ -3,15 +3,16 @@ namespace Utils;
 
 /**
  * Description of Validator
- *
+ * Validator Class
  * @author yoink
  */
 class Validator
 {
-
-	public function __construct(){}
-
-
+	/**
+	 *
+	 * @param string $email
+	 * @return boolean
+	 */
 	public static function validEmail($email)
 	{
 		if (filter_var($email, FILTER_VALIDATE_EMAIL))
@@ -20,6 +21,12 @@ class Validator
 		}
 		return false;
 	}
+
+	/**
+	 *
+	 * @param string $name
+	 * @return boolean
+	 */
 	public static function validName($name)
 	{
 		if(!preg_match('/^[a-zA-Z][a-zA-Z\.\s]{3,20}$/', $name))
@@ -28,6 +35,12 @@ class Validator
 		}
 		return true;
 	}
+
+	/**
+	 *
+	 * @param string $pass
+	 * @return boolean
+	 */
 	public static function validPassword($pass)
 	{
 		if (strlen($pass) > 20 || strlen($pass) < 8)
@@ -41,6 +54,11 @@ class Validator
 		return true;
 	}
 
+	/**
+	 *
+	 * @param string $text
+	 * @return boolean
+	 */
 	public static function validDescript($text)
 	{
 		if(mb_strlen($text) < 400 && mb_strlen($text) > 5)
@@ -50,6 +68,15 @@ class Validator
 		return false;
 	}
 
+	/**
+	 * cheks that start and end of event cant be the same time
+	 * end cant be earlier than start
+	 * and start and end of event must be in 8-20 hours of day(defined by constants)
+	 *
+	 * @param \DateTime $tStart
+	 * @param \DateTime $tEnd
+	 * @return boolean
+	 */
 	public static function validTimeRange(\DateTime $tStart,\DateTime $tEnd)
 	{
 		$valStart = clone $tStart;
@@ -69,17 +96,37 @@ class Validator
 		return true;
 	}
 
+	/**
+	 * check is weekend day
+	 *
+	 * @param \DateTime $tStart
+	 * @return boolean
+	 */
 	public static function isWeekend(\DateTime $tStart)
 	{
 		return (date('N', strtotime($tStart->format('Y-m-d'))) >= 6);
 	}
 
+	/**
+	 * checks that input dateTime not earlier than current dateTime
+	 *
+	 * @param \DateTime $tStart
+	 * @return boolean
+	 */
 	public static function isPastTime(\DateTime $tStart)
 	{
 		$now = new \DateTime();
 		return ($tStart->getTimestamp() < $now->getTimestamp());
 	}
 
+	/**
+	 * checks on max duration with selected recurring mode
+	 *
+	 * @param string $type
+	 * @param string\int $value
+	 * @return boolean
+	 * @throws \Exception if type not supported
+	 */
 	public static function validDuration($type, $value)
 	{
 		if((int)$value < 1)

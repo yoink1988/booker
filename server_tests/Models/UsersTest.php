@@ -30,7 +30,7 @@ class UsersTest  extends \PHPUnit_Framework_TestCase
     public function testGetUsersTrue()
     {
 		$this->dbManager->addDBRecord("insert into employees set id = 1, name = 'User'", "delete from employees where id = 1");
-		$res = $this->users->getUsers(1);
+		$res = $this->users->getUsers(array('id' => 1));
 		$this->assertTrue(count($res) > 0);
     }
 

@@ -2,18 +2,27 @@
 namespace Controllers;
 /**
  * Description of Auth
- *
+ * Auth Controller
  * @author yoink
  */
 class Auth
 {
+	/** @var \Models\Users */
     private $model;
 
+	/**
+	 * gets \Models\Auth instance
+	 */
     public function __construct()
     {
         $this->model = new \Models\Auth();
 	}
 
+	/**
+	 * main GET requet logic
+	 * 
+	 * @return type
+	 */
 	public function getAuth()
 	{
 		$params = array();
@@ -22,6 +31,12 @@ class Auth
 		return $this->model->checkAuth($params);
 	}
 
+	/**
+	 * main PUT request logic
+	 *
+	 * @param type $params
+	 * @return boolean
+	 */
 	public function putAuth($params)
 	{
 		if($this->model->checkLogData($params))

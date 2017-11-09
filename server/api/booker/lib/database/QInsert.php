@@ -2,16 +2,24 @@
 namespace database;
 /**
  * Description of QInsert
- *
+ * class for INSERT query
  * @author yoink
  */
 class QInsert extends \database\Query
 {
+	/**
+	 *
+	 * @return \self
+	 */
 	public static function instance()
 	{
 		return new self();
 	}
 
+	/**
+	 *
+	 * @return string query
+	 */
 	public function getStringQuery()
 	{
 		$query = '';

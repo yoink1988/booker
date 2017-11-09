@@ -3,7 +3,7 @@ namespace database;
 
 /**
  * Description of QDelete
- *
+ * class for DELETE query
  * @author yoink
  */
 class QDelete extends \database\Query

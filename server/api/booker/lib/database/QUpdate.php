@@ -2,19 +2,24 @@
 namespace database;
 /**
  * Description of QUpdate
- *
+ * class for UPDATE query
  * @author yoink
  */
 class QUpdate extends Query
 {
+	/**
+	 *
+	 * @return \self
+	 */
 	public static function instance()
 	{
 		return new self();
 	}
-/**
- *
-	 * @return string $query\ returns an empty string if no "where in query"
- */
+
+	/**
+	 *
+	 * @return string $query\ returns an empty string if no "WHERE in query"
+	 */
 	public function getStringQuery()
 	{
 		$query = '';

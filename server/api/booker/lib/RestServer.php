@@ -2,7 +2,7 @@
 
 /**
  * Description of RestServer
- *
+ * Main Server functional class
  * @author yoink
  */
 class RestServer
@@ -40,6 +40,14 @@ class RestServer
 
 	}
 
+	/**
+	 * executes main logic method
+	 *
+	 * @param string $class  classname of Controller
+	 * @param string $method of Controllers main logic method
+	 * @param array $param parameters to execute method
+	 * @throws \Exception if no method in class
+	 */
 	private function execMethod($class, $method, $param = null)
     {
         if (method_exists($class, $method))
@@ -61,6 +69,11 @@ class RestServer
 		}
 	}
 
+	/**
+	 * gets controller\method\params from url request url
+	 *
+	 * @throws \Exception if invalid params passed
+	 */
 	private function parseUrl()
 	{
 		$arrayUrl = explode('/api/', $this->url);
@@ -102,6 +115,12 @@ class RestServer
 			}
 		}
 	}
+
+	/**
+	 * gets args from phpinput
+	 *
+	 * @return array of args
+	 */
 	private function getArgs()
     {
 		return json_decode(file_get_contents("php://input"), true);
