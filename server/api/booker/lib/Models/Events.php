@@ -33,13 +33,15 @@ class Events
 	public function getEvent($id, $count = false, $uId = false)
 	{
 				
-		$q = \database\QSelect::instance()->setColumns('e.id, ed.desc as descr, e.submit, ed.id_employee as u_id, '
-													 . 'emp.name as u_name, ed.start, ed.end')
-											->setTable('events e')
-											->setJoin('left join event_details ed on e.id = ed.id '
-													. 'left join employees emp on ed.id_employee = emp.id')
-											->setWhere("e.id = {$this->db->clearString($id)}"
-													 . " and ed.start > NOW()");
+		$q = \database\QSelect::instance()
+								->setColumns('e.id, ed.desc as descr, e.submit, '
+										   . 'ed.id_employee as u_id, '
+										   . 'emp.name as u_name, ed.start, ed.end')
+								->setTable('events e')
+								->setJoin('left join event_details ed on e.id = ed.id '
+										. 'left join employees emp on ed.id_employee = emp.id')
+								->setWhere("e.id = {$this->db->clearString($id)}"
+										. " and ed.start > NOW()");
 
 		if($uId)
 		{
@@ -68,20 +70,20 @@ class Events
 			return false;
 		}
 		$query = \database\QSelect::instance()
-				->setColumns('e.id, ed.desc as descr, '
-							. 'e.submit, '
-							. 'ed.id_employee as u_id, '
-							. 'e.id_room as room_id, '
-							. 'emp.name as u_name, '
-							. 'r.name as room_name, '
-							. 'ed.start, ed.end')
-				  ->setTable('events e')
-				  ->setJoin('left join event_details ed on e.id = ed.id '
-						  . 'left join rooms r on r.id = e.id_room '
-						  . 'left join employees emp on ed.id_employee = emp.id')
-				->setWhere("ed.start between {$this->db->clearString($params['start'])} "
-						. "and {$this->db->clearString($params['end'])}"
-						. "and e.id_room = {$this->db->clearString($params['id_room'])}");
+						->setColumns('e.id, ed.desc as descr, '
+									. 'e.submit, '
+									. 'ed.id_employee as u_id, '
+									. 'e.id_room as room_id, '
+									. 'emp.name as u_name, '
+									. 'r.name as room_name, '
+									. 'ed.start, ed.end')
+						  ->setTable('events e')
+						  ->setJoin('left join event_details ed on e.id = ed.id '
+								  . 'left join rooms r on r.id = e.id_room '
+								  . 'left join employees emp on ed.id_employee = emp.id')
+						->setWhere("ed.start between {$this->db->clearString($params['start'])} "
+								. "and {$this->db->clearString($params['end'])}"
+								. "and e.id_room = {$this->db->clearString($params['id_room'])}");
 
 		return $this->db->select($query);
 	}
@@ -158,7 +160,6 @@ class Events
 						return $res;
 					}
 				}
-
 				return true;
 			}
 			return FAILED;
