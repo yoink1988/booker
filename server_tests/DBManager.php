@@ -55,7 +55,7 @@ class DBManager
 	{
 		if(!$stmt = self::$pdo->query($query))
 		{
-			throw new Exception('Invlid query!' . $query);
+			throw new Exception('Invalid query!' . $query);
 		}
 
 		$result = array();

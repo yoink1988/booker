@@ -47,4 +47,89 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertTrue(\Utils\Validator::validDescript('Green peace meeting'));
 	}
+
+	public function testValidTimeRangeTrue()
+	{
+		$timeStart = new \DateTime();
+		$timeEnd = new \DateTime();
+		$timeStart->setTime(9,20,0);
+		$timeEnd->setTime(10,20,0);
+
+		$this->assertTrue(\Utils\Validator::validTimeRange($timeStart, $timeEnd));
+
+	}
+	public function testValidTimeRangeFalseTimeEquals()
+	{
+		$timeStart = new \DateTime();
+		$timeEnd = new \DateTime();
+		$timeStart->setTime(9,20,0);
+		$timeEnd->setTime(9,20,0);
+		$this->assertFalse(\Utils\Validator::validTimeRange($timeStart, $timeEnd));
+	}
+	public function testValidTimeRangeFalseTimeEndLessStart()
+	{
+		$timeStart = new \DateTime();
+		$timeEnd = new \DateTime();
+		$timeStart->setTime(9,20,0);
+		$timeEnd->setTime(8,20,0);
+		$this->assertFalse(\Utils\Validator::validTimeRange($timeStart, $timeEnd));
+	}
+	public function testValidTimeRangeFalseTimeNotInDayBorders()
+	{
+		$timeStart = new \DateTime();
+		$timeEnd = new \DateTime();
+		$timeStart->setTime(6,20,0);
+		$timeEnd->setTime(7,20,0);
+		$this->assertFalse(\Utils\Validator::validTimeRange($timeStart, $timeEnd));
+	}
+
+	public function testIsWeekendTrue()
+	{
+		$day = new \DateTime();
+		$day->setDate(2017,11,11);
+		$this->assertTrue(\Utils\Validator::isWeekend($day));
+	}
+	public function testIsWeekendFalse()
+	{
+		$day = new \DateTime();
+		$day->setDate(2017,11,8);
+		$this->assertFalse(\Utils\Validator::isWeekend($day));
+	}
+
+	public function testIsPastTimeTrue()
+	{
+		$time = new \DateTime();
+		$time->setDate(1971,12,12);
+		$this->assertTrue(\Utils\Validator::isPastTime($time));
+	}
+
+	public function testIsPastTimeFalse()
+	{
+		$time = new \DateTime();
+		$time->modify('+1 minute');
+		$this->assertFalse(\Utils\Validator::isPastTime($time));
+	}
+
+	public function testValidDurationTrue()
+	{
+		$type ='weekly';
+		$value= 2;
+		$this->assertTrue(\Utils\Validator::validDuration($type,$value));
+	}
+	
+	public function testValidDurationFalse()
+	{
+		$type ='weekly';
+		$value= 'wqeqwe';
+		$this->assertFalse(\Utils\Validator::validDuration($type,$value));
+	}
+
+	public function testValidDurationException()
+	{
+		$this->setExpectedException(\Exception::class);
+		$type ='wedasdekly';
+		$value= '2';
+		\Utils\Validator::validDuration($type,$value);
+	}
+
 }

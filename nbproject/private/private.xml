@@ -3,10 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/xampp/htdocs/booker/server_tests/Utils/ValidatorTest.php</file>
-            <file>file:/D:/xampp/htdocs/booker/server_tests/Models/UsersTest.php</file>
+            <file>file:/D:/xampp/htdocs/booker/server/api/booker/lib/Models/Events.php</file>
             <file>file:/D:/xampp/htdocs/booker/server_tests/Models/AuthTest.php</file>
-            <file>file:/D:/xampp/htdocs/booker/server_tests/config.php</file>
+            <file>file:/D:/xampp/htdocs/booker/server_tests/DBManager.php</file>
         </group>
     </open-files>
 </project-private>

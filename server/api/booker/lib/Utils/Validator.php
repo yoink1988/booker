@@ -82,6 +82,10 @@ class Validator
 
 	public static function validDuration($type, $value)
 	{
+		if((int)$value < 1)
+		{
+			return false;
+		}
 		switch ($type)
 		{
 			case 'weekly':
@@ -103,7 +107,7 @@ class Validator
 				}
 				return true;
 			default :
-				throw new Exception(400);
+				throw new \Exception(400);
 		}
 	}
 }

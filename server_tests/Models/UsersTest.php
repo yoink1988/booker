@@ -36,45 +36,85 @@ class UsersTest  extends \PHPUnit_Framework_TestCase
 
     public function testAddUserInvalidName()
     {
-		$res = $this->users->addUser(array('name' => '!@$R#','login' => '','pass' => ''));
-		$this->assertEquals($res , 'Invalid Name');
+		$res = $this->users->addUser(array('name' => '!@$R#','email' => '','pass' => ''));
+		$this->assertEquals($res , 'Incorrect Name');
     }
     public function testAddUserInvalidEmail()
     {
-		$res = $this->users->addUser(array('name' => 'Iluha','login' => 'dasqee.ru','pass' => ''));
-		$this->assertEquals($res , 'Invalid Email');
+		$res = $this->users->addUser(array('name' => 'Iluha','email' => 'dasqee.ru','pass' => ''));
+		$this->assertEquals($res , 'Incorrect Email');
     }
-	
+
     public function testAddUserInvalidPass()
     {
-		$res = $this->users->addUser(array('name' => 'Iluha','login' => 'iluha@mail.ru','pass' => 'qwe11'));
-		$this->assertEquals($res , 'Invalid Password');
+		$res = $this->users->addUser(array('name' => 'Iluha','email' => 'iluha@mail.ru','pass' => 'qwe11'));
+		$this->assertEquals($res , 'Incorrect Password');
     }
 
     public function testAddUserTrue()
     {
-		$this->dbManager->addToClear("delete from employees where name = 'Iluha' and login = 'iluha@mail.ru'");
-		$this->assertTrue($this->users->addUser(array('name' => 'Iluha','login' => 'iluha@mail.ru','pass' => 'qwqwewe11')));
+		$this->dbManager->addToClear("delete from employees where name = 'Iluha' and email = 'iluha@mail.ru'");
+		$this->assertTrue($this->users->addUser(array('name' => 'Iluha','email' => 'iluha@mail.ru','pass' => 'qwqwewe11')));
     }
 
-	public function testUpdateUserInvalidName()
+	public function testEditUserInvalidName()
 	{
 		$this->dbManager->addDBRecord("insert into employees"
-										. " set id = 1, name = 'User', login = 'user@user.ru', pass = 'qweqwe11'",
-										"delete from users where id = 1");
-
-		$res = $this->users->updateUser(array('name' => '!@$R#','login' => '','pass' => ''));
-		$this->assertEquals($res, 'Invalid Name');
-	}
-
-	public function testUpdateUserInvalidEmail()
-	{
-		$this->dbManager->addDBRecord("insert into employees"
-										. " set id = 1, name = 'User', login = 'user@user.ru', pass = 'qweqwe11'",
+										. " set id = 1, name = 'User', email = 'user@user.ru', pass = 'qweqwe11'",
 										"delete from employees where id = 1");
 
-		$res = $this->users->updateUser(array('name' => 'Iluha','login' => 'qweqwe','pass' => ''));
-		$this->assertEquals($res, 'Invalid Email');
+		$res = $this->users->editUser(array('name' => '!@$R#','email' => '','pass' => ''));
+		$this->assertEquals($res, 'Incorrect Name');
+	}
+
+	public function testEditUserInvalidEmail()
+	{
+		$this->dbManager->addDBRecord("insert into employees"
+										. " set id = 1, name = 'User', email = 'user@user.ru', pass = 'qweqwe11'",
+										"delete from employees where id = 1");
+
+		$res = $this->users->editUser(array('name' => 'Iluha','email' => 'qweqwe','pass' => ''));
+		$this->assertEquals($res, 'Incorrect Email');
+	}
+
+	public function testEditUserTrue()
+	{
+		$this->dbManager->addDBRecord("insert into employees"
+										. " set id = 1, name = 'User', email = 'user@user.ru', pass = 'qwqwewqee'",
+										"delete from employees where id = 1");
+
+		$this->assertTrue($this->users->editUser(array('id' => 1, 'name' => 'Iluha','email' => 'user@user.ru')));
+	}
+
+	public function testDeleteUser()
+	{
+		$this->dbManager->addDBRecord("insert into employees set id = 1, name = 'User'");
+		$this->users->deleteUser('1');
+
+		$res = $this->dbManager->getDBRecord('select name from employees where id = 1');
+		$this->assertEquals($res, array());
+	}
+
+	public function testDeleteUserClearEvents()
+	{
+		$this->dbManager->addDBRecord("insert into employees set id = 1, name = 'User'");
+		$this->dbManager->addDBRecord("insert into events set id = 1, id_room = 1");
+		$start = new \DateTime();
+		$end = new \DateTime();
+		$start->modify('+1 day');
+		$start->setTime(9,0,0);
+		$end->setTime(10,0,0);
+
+		$this->dbManager->addDBRecord("insert into event_details "
+				. "set id = 1, "
+				. "start = '{$start->format('Y-m-d H:i:s')}', "
+				. "end = '{$end->format('Y-m-d H:i:s')}', "
+				. "`desc` = 'dasdasdasd', "
+				. "id_employee = 1");
+		$this->users->deleteUser(1);
+
+		$res = $this->dbManager->getDBRecord('select * from events where id = 1');
+		$this->assertEquals($res, array());
 	}
 
 }

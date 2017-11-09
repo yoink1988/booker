@@ -20,7 +20,6 @@ class Events
 													. 'left join employees emp on ed.id_employee = emp.id')
 											->setWhere("e.id = {$this->db->clearString($id)}"
 													 . " and ed.start > NOW()");
-//										
 
 		if($uId)
 		{
@@ -29,7 +28,6 @@ class Events
 
 		if($count)
 		{
-//				dump($q->getStringQuery());exit;
 			return $this->db->selectCount($q);
 		}
 		return $this->db->select($q);
@@ -82,6 +80,7 @@ class Events
 
 	public function addEvent(array $params)
 	{
+
 		if($error = $this->checkEventForm($params))
 		{
 			return $error;
@@ -113,6 +112,7 @@ class Events
 						return $res;
 					}
 				}
+
 				return true;
 			}
 			return false;
@@ -152,10 +152,12 @@ class Events
 
 	private function addMainEvent($mainStart, $mainEnd, $id_room)
 	{
+		
 		if($this->isTimeAvaliable($mainStart, $mainEnd, $id_room))
 		{
 			$q = \database\QInsert::instance()->setTable('events')
 											  ->setParams(array('id_room' => $id_room));
+			
 			if($this->db->insert($q))
 			{
 				return $this->db->getLastInsertID();
@@ -180,6 +182,7 @@ class Events
 															'end' => $mainEnd->format(SQL_FORMAT),
 															'id_employee' => $id_emp,
 															'desc' => $desc));
+
 		return $this->db->insert($q);
 	}
 
@@ -233,6 +236,7 @@ class Events
 
 	public function updateEvents(array $params, $uId = null)
 	{
+				
 		if($error = $this->checkEventForm(array ('details' => array('start' => $params['details']['timeStart'],
 																	'end' => $params['details']['timeEnd'],
 																	'descr' => $params['details']['desc']))))
@@ -253,6 +257,7 @@ class Events
 		$params['startPoint'] = $this->getTStamp($params['startPoint']);
 		if(!$occur)
 		{
+					
 			return $this->updateEvent($id, $idRoom, $params, $uId);
 		}
 

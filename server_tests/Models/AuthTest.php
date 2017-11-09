@@ -56,9 +56,8 @@ class AuthTest extends \PHPUnit_Framework_TestCase
 	{
 		$pass = md5('qwe123asd');
 		$this->dbManager->addDBRecord(
-				"insert into users set login='asd@asd.com',pass='$pass',"
-					. "status='1'",
-				"delete from users where login='asd@asd.com' and pass='$pass'");
+				"insert into employees set email='asd@asd.com',pass='$pass'",
+				"delete from employees where email='asd@asd.com' and pass='$pass'");
 
 		$this->assertTrue($this->auth->checkLogData(array(
 			'login' => 'asd@asd.com', 'pass' => 'qwe123asd')));
@@ -73,10 +72,10 @@ class AuthTest extends \PHPUnit_Framework_TestCase
 	public function testLoginValid()
 	{
 		$pass = md5('qweqwe11');
-		$this->dbManager->addDBRecord("insert into users set login = 'qwee@qwe.rr', pass = '$pass', role='user', discount = 0", "delete from users where login= 'qwee@qwe.rr' and pass= '$pass'");
+		$this->dbManager->addDBRecord("insert into employees set email = 'qwee@qwe.rr', pass = '$pass', id_role='1'", "delete from employees where email = 'qwee@qwe.rr' and pass= '$pass'");
 
 		$result = $this->auth->login(array('login'=> 'qwee@qwe.rr', 'pass' => 'qweqwe11'));
-		$this->assertTrue(is_array($result) && count($result) != 0);
+		$this->assertTrue(is_array($result) && (count($result[0]) != 0));
 
 	}
 
@@ -90,7 +89,7 @@ class AuthTest extends \PHPUnit_Framework_TestCase
 	{
 		$pass = md5('qweqwe11');
 
-		$this->dbManager->addDBRecord("insert into users set id=1, hash= '$pass', login = 'qwee@qwe.rr', pass = '$pass', role='user', discount = 0", "delete from users where login= 'qwee@qwe.rr' and pass= '$pass'");
+		$this->dbManager->addDBRecord("insert into employees set id=1, hash= '$pass', email = 'qwee@qwe.rr', pass = '$pass', id_role='1'", "delete from employees where email= 'qwee@qwe.rr' and pass= '$pass'");
 
 		$this->assertTrue($this->auth->checkAuth(array('id'=> '1', 'hash' => $pass)));
 	}
