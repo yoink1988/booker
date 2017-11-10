@@ -32,7 +32,6 @@ class Events
 	 */
 	public function getEvent($id, $count = false, $uId = false)
 	{
-				
 		$q = \database\QSelect::instance()
 								->setColumns('e.id, ed.desc as descr, e.submit, '
 										   . 'ed.id_employee as u_id, '
@@ -128,7 +127,6 @@ class Events
 	 */
 	public function addEvent(array $params)
 	{
-
 		if($error = $this->checkEventForm($params))
 		{
 			return $error;
